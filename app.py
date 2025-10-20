@@ -92,6 +92,7 @@ fig_rating = px.bar(
     labels={'Rating': 'Star Rating (⭐)', 'Count of Books': 'Number of Books'},
     color='Rating', # Color by star rating
     color_continuous_scale=px.colors.sequential.Viridis # Use continuous color scale
+    #color_discrete_sequence=['#F6D73B'] # Use a single color for all bars
 )
 # Add white borders to bar chart bars for better visual separation
 fig_rating.update_traces(marker_line_width=1, marker_line_color='white')
