@@ -2,26 +2,26 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-from tqdm import tqdm # 引入一个漂亮的进度条库，让等待过程更友好
+from tqdm import tqdm # Import a nice progress bar library
 import time
 
 def scrape_all_books():
     """
-    爬取 books.toscrape.com 网站上所有书籍的数据。
+    Scrapes all book data from the books.toscrape.com.
     """
     base_url = 'http://books.toscrape.com/catalogue/'
     current_url = base_url + 'page-1.html'
     all_books_data = []
 
-    # 我们知道总共有50页，用tqdm创建一个可视化进度条
-    for page_num in tqdm(range(1, 51), desc="正在爬取所有书籍页面..."):
+    # There are 50 pages total, so create a progress bar with tqdm
+    for page_num in tqdm(range(1, 51), desc="Scraping all pages..."):
         try:
             response = requests.get(current_url)
-            # 检查请求是否成功
+            # Check if the request was successful
             response.raise_for_status() 
         except requests.exceptions.RequestException as e:
-            print(f"\n访问 {current_url} 出错: {e}")
-            break # 如果出错则停止
+            print(f"\nError occurred while accessing {current_url}: {e}")
+            break # Stop if there's an error
 
         soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -29,47 +29,47 @@ def scrape_all_books():
         for article in articles:
             title = article.h3.a['title']
             
-            # 清理价格数据，并转换为浮点数
+            # Clean the price data and convert to float
             price_str = article.find('p', class_='price_color').text
             price = float(price_str.replace('£', ''))
             
-            # 获取星级评价并转换为数字
+            # Get the star rating and convert it to number
             rating_map = {'One': 1, 'Two': 2, 'Three': 3, 'Four': 4, 'Five': 5}
-            # 'star-rating Three' -> class列表的第二个元素是星级
+            # e.g.,'star-rating Three' -> the second class is the rating
             rating_class = article.find('p', class_='star-rating')['class'][1] 
-            rating = rating_map.get(rating_class, 0) # 如果没找到，默认为0星
+            rating = rating_map.get(rating_class, 0) # Default to 0 if not found
             
             all_books_data.append({
-                '标题': title,
-                '价格(£)': price,
-                '星级': rating
+                'Title': title,
+                'Price(£)': price,
+                'Rating': rating
             })
         
-        # 寻找下一页的链接
+        # Find the link for the next page
         next_page_tag = soup.find('li', class_='next')
         if next_page_tag and next_page_tag.a:
             current_url = base_url + next_page_tag.a['href']
-            time.sleep(0.1) # 增加一个微小的延时，做一个有礼貌的爬虫
+            time.sleep(0.1) # Add a small delay to be a polite scraper
         else:
-            print("\n已到达最后一页。")
+            print("\nReached the last page.")
             break 
             
     return pd.DataFrame(all_books_data)
 
-# --- 主程序 ---
+# --- Main Execution ---
 if __name__ == "__main__":
-    print("开始爬取 books.toscrape.com ...")
+    print("Starting to scrape books.toscrape.com ...")
     books_df = scrape_all_books()
 
     if not books_df.empty:
-        # 保存数据到CSV文件，编码设为 'utf-8-sig' 以防止在Excel中打开中文乱码
+        # Save data to CSV file, with encoding set to 'utf-8-sig' to prevent garbled Chinese characters in Excel
         output_path = 'books_data.csv'
         books_df.to_csv(output_path, index=False, encoding='utf-8-sig')
 
-        print("\n✅ 任务完成！")
-        print(f"总共爬取了 {len(books_df)} 本书的数据。")
-        print(f"数据已保存到 {output_path}。")
-        print("\n数据预览：")
+        print("\n Task Completed!")
+        print(f"Successfully scraped books: {len(books_df)}")
+        print(f"Data saved to {output_path}.")
+        print("\nPreview of the data:")
         print(books_df.head())
     else:
-        print("\n❌ 未能爬取到任何数据。")
+        print("\n Failed to scrape any book data.")
