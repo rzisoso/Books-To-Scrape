@@ -22,3 +22,11 @@ The final product is a "Market Intelligence Dashboard" for the `books.toscrape.c
 * **Dynamic Filtering:** Users can filter data in real-time using sidebar controls for price range and star rating.
 * **Data-Driven KPIs:** The dashboard displays key metrics (Total Books, Avg. Price, Avg. Rating) that update instantly with filters.
 * **Rich Visualizations:** Uses `Plotly Express` to create interactive histograms and bar charts with custom styling.
+
+## Tech Stack
+
+* **Python**
+* **Streamlit** (for the web dashboard)
+* **Pandas** (for data analysis)
+* **Plotly Express** (for data visualization)
+* **Requests** & **BeautifulSoup4** (for web scraping)
