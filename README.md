@@ -15,6 +15,8 @@ The final product is a "Market Intelligence Dashboard" for the `books.toscrape.c
 ## Live Demo
 **[ -> View the Live Dashboard Here <- ](https://books-to-scrape-dashboard.streamlit.app/)**
 
+*__Note:__ This app is hosted on Streamlit's free Community Cloud. If it's been inactive, it may go to sleep. If you see a "Zzzz" screen, please click the **"Yes, get this app back up!"** button. It will wake up and load in about 30 seconds.*
+
 ## Key Features
 
 * **Web Scraper (`main.py`):** A robust Python script using `Requests`, `BeautifulSoup`, and `tqdm` to scrape all 1,000 book entries across 50 pages, saving the data to a clean `books_data.csv`.
